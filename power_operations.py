@@ -1,3 +1,6 @@
+import time
+from Utils import Logger, SystemStatus
+
 class PowerManager:
     def __init__(self,critical_shutdown=False,scheduled_shutdown=False):
         self.logger = Logger()
