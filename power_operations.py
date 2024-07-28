@@ -1,10 +1,15 @@
 import time
 from Utils import Logger, SystemStatus
+from gc import collect
+import os
+import json
+from datetime import datetime,timedelta
 
 class PowerManager:
     def __init__(self,critical_shutdown=False,scheduled_shutdown=False):
         self.logger = Logger()
         self.system = SystemStatus()
+        self.time = ""
         self.is_power_on = True
         self.critical = False
         if critical_shutdown:
@@ -48,7 +53,6 @@ class PowerManager:
         # ........
         self.logger.log_info("power_operations","Scheduled shutdown")
         self.system.set_mode("PowerOff")
-        # os.system("shutdown /s /t time")
         self.run_shutdown_sequence()
     
     def handle_critical_shutdown(self):
@@ -61,15 +65,37 @@ class PowerManager:
     
     def run_initialization_sequence(self):
         # Perform initialization steps
-        # ..........
+        self.json_file = open("C:/Users/benja/Documents/AERO_2/STAGE/SCAMPI/Management/sensors_values.json","r")
+        self.txt = json.load(self.json_file)
+        self.tmp36 = datetime.strptime(self.txt["sensors"]['tmp36_temperature']["time"][-1],"%d-%m , %H:%M:%S")
+        self.OBC = datetime.strptime(self.txt["sensors"]["OBC_temperature"]["time"][-1],"%d-%m , %H:%M:%S")
+        self.pressure = datetime.strptime(self.txt["sensors"]["pressu0re"]["time"][-1],"%d-%m , %H:%M:%S")
+        print(self.tmp36,self.OBC,self.pressure)
+        self.delta  = self.time - self.tmp36
+        self.delta1  = self.time - self.OBC
+        self.delta2 = self.time - self.pressure
+        self.delta = (self.delta.days*3600 + self.delta.seconds)/60
+        self.delta1 = (self.delta1.days*3600 + self.delta1.seconds)/60
+        self.delta2 = (self.delta2.days*3600 + self.delta2.seconds)/60
+        if self.delta< 15 and self.delta1< 5 and self.delta2<5:
+            collect()
+        else :
+            self.logger.log_info("measurement_operation","One of the sensors stop to take measure")
+    
+            
+        
+        #time comparasion
         time.sleep(5)
         self.logger.log_info("power_operations","Initialization complete")
         self.system.set_mode('Nominal')
     
     def run_shutdown_sequence(self):
         # Perform shutdown steps
-        # .......
+        self.time = datetime.now().strftime("%d-%m , %H:%M:%S")
+        self.time = datetime.strptime(self.time,"%d-%m , %H:%M:%S")
         self.logger.log_info("power_operations","Shutdown complete")
-
+        # os.system("shutdown /s /t time")
 if __name__ ==  '__main__':
     test0 = PowerManager()
+    test0.run_shutdown_sequence()
+    test0.run_initialization_sequence()
