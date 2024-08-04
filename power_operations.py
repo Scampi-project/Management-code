@@ -3,7 +3,7 @@ from Utils import Logger, SystemStatus
 from gc import collect
 import os
 import json
-from datetime import datetime,timedelta
+from datetime import datetime
 
 class PowerManager:
     def __init__(self,critical_shutdown=False,scheduled_shutdown=False):
