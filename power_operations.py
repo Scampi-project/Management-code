@@ -9,7 +9,7 @@ class PowerManager:
     def __init__(self,critical_shutdown=False,scheduled_shutdown=False):
         self.logger = Logger()
         self.system = SystemStatus()
-        self.time = ""
+        self.time = "01-01 , 00:00:00"
         self.is_power_on = True
         self.critical = False
         if critical_shutdown:
@@ -65,26 +65,35 @@ class PowerManager:
     
     def run_initialization_sequence(self):
         # Perform initialization steps
-        self.json_file = open("C:/Users/benja/Documents/AERO_2/STAGE/SCAMPI/Management/sensors_values.json","r")
+        self.json_file = open("/home/pi/SCAMPI/Sensors/sensors_values.json",'r')
+        #.json_file = open("C:/Users/benja/Documents/AERO_2/STAGE/SCAMPI/Management/sensors_values.json","r")
         self.txt = json.load(self.json_file)
         self.tmp36 = datetime.strptime(self.txt["sensors"]['tmp36_temperature']["time"][-1],"%d-%m , %H:%M:%S")
         self.OBC = datetime.strptime(self.txt["sensors"]["OBC_temperature"]["time"][-1],"%d-%m , %H:%M:%S")
-        self.pressure = datetime.strptime(self.txt["sensors"]["pressu0re"]["time"][-1],"%d-%m , %H:%M:%S")
-        print(self.tmp36,self.OBC,self.pressure)
+        self.pressure = datetime.strptime(self.txt["sensors"]["pressure"]["time"][-1],"%d-%m , %H:%M:%S")
         self.delta  = self.time - self.tmp36
         self.delta1  = self.time - self.OBC
         self.delta2 = self.time - self.pressure
+        #time comparasion
         self.delta = (self.delta.days*3600 + self.delta.seconds)/60
         self.delta1 = (self.delta1.days*3600 + self.delta1.seconds)/60
         self.delta2 = (self.delta2.days*3600 + self.delta2.seconds)/60
-        if self.delta< 15 and self.delta1< 5 and self.delta2<5:
-            collect()
-        else :
-            self.logger.log_info("measurement_operation","One of the sensors stop to take measure")
-    
-            
+        self.check = True
+        if self.delta> 30 :
+                self.logger.log_info("measurement_operation",f"tmp36 sensor stop to take measure\nlast measure : {self.tmp36}")
+                self.check = False
+        if self.delta1> 5 :
+                self.logger.log_info("measurement_operation",f"missing data OBC temp\nlast measure : {self.OBC}")
+                self.check = False
+        if self.delta2> 30 :
+                self.logger.log_info("measurement_operation",f"missing data pressure \nlast measure : {self.pressure}")
+                self.check = False
+        if self.check:
+                self.logger.log_info("measurement_operation","sensors data: fine\n collecting garbage...")
+                collect()
+                
+        #Maybe add camera photo date comparaison
         
-        #time comparasion
         time.sleep(5)
         self.logger.log_info("power_operations","Initialization complete")
         self.system.set_mode('Nominal')
