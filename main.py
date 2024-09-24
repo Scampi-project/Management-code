@@ -25,42 +25,33 @@ class Main:
         self.systate.set_mode('PowerOn') 
         self.systate.update_mode('Initialization')
         self.power_manager.handle_power_on()
-        
+
         self.systate.set_mode('Initialization',self.power_manager.critical)
-        self.power_manager.check_power_status()
         self.systate.update_mode('Nominal')
         self.nominal_ops.perform_nominal_operations()
         self.measure.perform_sensors_measurements()
         self.time = time.time()
     def main_loop(self) :
-        self.count_1 = 1
-        self.count_2 = 1
-        self.count_3 = 1
-        self.count_4 = 1
-        self.count_5 = 1
+        self.count = 1
         # Main loop
         while True:
             try:
+                self.count +=1
+                print("5 minutes se sont écoulées")
                 # Check and handle power status
                 self.power_manager.check_power_status()
                 # Perform nominal operations
-                if self.time+self.count_1*300-50<time.time()<self.time+self.count_1*300+50: # OBC condition, waiting for 5min
-                    self.count_1 +=1
-                    print("5 minutes se sont écoulées")
-                    self.nominal_ops.perform_nominal_operations()
-                ## Complete the transition of the System states ? 
-                if self.time+self.count_1*1800-50<time.time()<self.time+self.count_1*180+50: # temp & pressure condition, waiting for 30min
-                    self.count_2 +=1
+                 # OBC condition, waiting for 5min
+                self.nominal_ops.perform_nominal_operations()
+                if self.count%6 == 0: # temp & pressure condition, waiting for 30min
                     self.measure.perform_sensors_measurements()
-                if self.time+self.count_1*3600-50<time.time()<self.time+self.count_1*3600+50: # short photo condition, waiting for 1h
-                    self.count_3 +=1
+                if self.count%12 == 0 : # short photo condition, waiting for 1h
                     self.measure.record_photos()
-                if self.time+self.count_1*10800-50<time.time()<self.time+self.count_1*10800+50: # short video condition, waiting for 30h
-                    self.count_4 +=1
+                if self.count%36 == 0: # short video condition, waiting for 30h
                     self.measure.record_videos()    
-                if self.time+self.count_1*432000-50<time.time()<self.time+self.count_*432000+50: # long video condition, waiting for 5days
-                    self.count_5 +=1
+                if self.count%1440 == 0: # long video condition, waiting for 5days
                     self.measure.record_videos(True)    
+                    
                 # Perform measurements if in Measurement mode
                 # if self.systate.current_mode == 'Measurement':
                     # self.measurement_manager.perform_measurements()
@@ -70,8 +61,9 @@ class Main:
 
                 # # Perform data transmission if in Transmission mode
                 # if self.systate.current_mode == 'Transmission':
-                #     transmission_manager.transmit_data() 
-                time.sleep(5.0)   
+                #     transmission_manager.transmit_data()
+                #waiting 5 min for recording new data 
+                time.sleep(300.0)   
             except Exception as e:
                 self.log.log_info("errors",f"Error in main loop: {str(e)}")
                 # You need to expand on the error with the ones that are easy to handle.
