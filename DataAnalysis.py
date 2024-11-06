@@ -24,7 +24,7 @@ class DataAnalysis :
             self.std=self.std**(1/2)        
             self.logger.log_info("DataAnalysis",f"mean_tmp36-temperature_5-last-measures : {self.mean} , standard-deviation-type_tmp36-temperature_5-last-measures : {self.std}")
     
-    def OBC_temperature(self):
+    def obc_temperature(self):
         if len(self.txt["sensors"]["OBC_temperature"]["values"])<5 :
             self.logger.log_info("DataAnalysis","Not enough measures")        
         else :   
