@@ -26,8 +26,8 @@ class MeasurementManager:
     def measure_abiotic_factors(self,pin):
         #self.tempressure.readProbe("<pin number>") 
         self.tempressure.readProbe(17)
-        #self.pressure = self.tempressure.pressure
-	    #self.inside_temp = self.tempressure.inside_temp  uncomment when sensors are connected
+        self.pressure = self.tempressure.pressure
+        self.inside_temp = self.tempressure.inside_temp  
         
     """Fake input to emulate the temperature reading"""
     def record_photos(self):
