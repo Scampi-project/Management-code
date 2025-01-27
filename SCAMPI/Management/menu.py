@@ -1,0 +1,21 @@
+import tkinter
+
+window = tkinter.Tk()
+window.geometry("800x800")
+window.title("Command Menu")
+cam_lab = tkinter.Label (text = "Camera management"command=)
+button = tkinter.Button(text = "Take a picture"command=)
+button1 = tkinter.Button(text = "Take a video"command=)
+cam_lab.place(x=100,y=100)
+button.place(x=60,y=160)
+button1.place(x=160,y=160)
+set_mode = tkinter.Label (text = "Mode management")
+button2 = tkinter.Button(text = "Nominal",command=)
+button3 = tkinter.Button(text = "Transmission"command=)
+button4 = tkinter.Button(text = "Data Analysis"command=)
+set_mode.place(x=500,y=100)
+button2.place(x=460,y=160)
+button3.place(x=560,y=160)
+button4.place(x=560,y=190)
+window.mainloop() 
+
