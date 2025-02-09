@@ -46,44 +46,12 @@ class SystemStatus:
         self.current_mode = 'PowerOff'
         self.log = Logger()
         
-    def update_mode(self,mode):
-        self.log.log_info("power_operations",f"mode is changing from {self.current_mode} to {mode}")
-        if mode=="Initialisation":
-            gc.collect(generation=0) #nettoyage de la RAM
-            #if critical == False :
-            #    self.log_cleaning(file)
-            #os.system("source /home/pi1/env/bin/activate")
+    def update_mode(self,mode,mode2):
+        dict = {'Initialization':['power_operations',"\nInitialization complete"],'PowerOff':["power_operations",'\nPower is Off'],
+                'PowerOn':['power_operations','\nStarting sequence finished'],'Nominal':['measurement_operations','\nTrying to change the world'],
+                'Transmission':['transmission_operations','transmission complete'],'DataAnalysis':['data_analysis_operations','Data analysis complete'], }
+        self.log.log_info(dict[mode][0],dict[mode][1])
         self.current_mode = mode
-        self.log.log_info("power_operations",f"{mode}")
-    """
-    def set_mode(self,mode,critical=False) :
-        if mode == 'Initialization':
-            # cleaning ram with garbage collector
-            #if critical == False :
-            #    self.log_cleaning(file)
-            # os.system("source /home/pi1/env/bin/activate")
-            
-            self.log.log_info("power_operations","Initialization complete")
-        if mode == 'PowerOff':
-            self.log.log_info("power_operations","Power is Off")
-        
-        if mode == 'PowerOn':
-            self.log.log_info("power_operations","Power is On")
-
-        if mode == 'Nominal':
-    
-            print('Trying to change the world')
-        if mode == 'Transmission':
-    
-            print('Vous êtes satellisé')
-        if mode == 'Measurement':
-    
-            print('Vous êtes satellisé mesurément')
-        if mode == 'DataAnalysis':
-    
-            print('Vous êtes satellisé analytiquement')
-            
-     """   
     
         
 
