@@ -51,7 +51,7 @@ class SystemStatus:
                 'PowerOn':['power_operations','\nStarting sequence finished'],'Nominal':['measurement_operations','\nTrying to change the world'],
                 'Transmission':['transmission_operations','transmission complete'],'DataAnalysis':['data_analysis_operations','Data analysis complete'], }
         self.log.log_info(dict[mode][0],dict[mode][1])
-        self.current_mode = mode
+        self.current_mode = mode2
     
         
 
