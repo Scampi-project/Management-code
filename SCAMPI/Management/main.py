@@ -22,15 +22,11 @@ class Main:
         self.data_analysis = DataAnalysis()
         # transmission_manager = TransmissionManager()
         self.log = Logger()
-        
-        self.power_manager.check_power_status()
-        self.power_manager.handle_power_on()
-        self.nominal_ops.perform_nominal_operations()
+        self.power_manager.run_initialization_sequence(self.measure)
         with open(path, 'r') as file :
             self.txt = json.load(file)
             file.close()
         self.delatacount = (datetime.now()-datetime.strptime(self.txt["shutdown"][-1],"%d-%m , %H:%M:%S")).total_seconds()//300 #tranche de 5min
-        
     def main_loop(self) :
         with open(path, 'r') as file :
             self.txt = json.load(file)
