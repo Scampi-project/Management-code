@@ -103,7 +103,7 @@ class PowerManager:
         
         time.sleep(5)
         self.logger.log_info("power_operations","Initialization complete")
-        self.system.update_mode('Nominal')
+        self.system.update_mode('Initialization','Nominal')
         
         
     """
