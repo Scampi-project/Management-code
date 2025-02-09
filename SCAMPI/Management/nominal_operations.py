@@ -1,18 +1,22 @@
 import time
 from Utils import Logger, SystemStatus
 import power_operations as po
-
+import sys
+sys.path.insert(1,"/home/pi/SCAMPI/Sensors")
+from led_panel import Led_panel
+from datetime import datetime
 class NominalOperations:
     def __init__(self):
         self.log = Logger()
-        
+        self.lp = Led_panel()
 
-    def perform_nominal_operations(self):
+    def perform_nominal_operations(self,inside_temp):
         self.log.log_info("nominal_operations","Performing nominal operations")
         self.monitor_obc_status()
-        self.control_led_panels()
-        
-    
+        self.daylight_circle()
+        time.sleep(5)
+        self.lp.check_luminosity(inside_temp)
+         
     def monitor_obc_status(self):
         # Monitor temperature, current, etc.
         self.get_obc_temperature()
@@ -27,11 +31,12 @@ class NominalOperations:
         # .....
         self.log.log_info("nominal_operations",f"OBC Temp: {self.obc_temp}, OBC Current: {self.obc_current}")
     
-    def control_led_panels(self):
-        #check time to handle daylight cycle
-        # Control LED panels
-        # ....
-        return  2
+    def daylight_circle(self):
+        self.current_hour = datetime.now().hour
+        if 8 <= self.current_hour < 20:  # Between 8am and 8pm
+            self.lp.turn_on()
+        else :
+            self.lp.turn_off()
     def get_obc_temperature(self):
         self.obc_temp = 50
         # getting temperature
@@ -43,5 +48,3 @@ class NominalOperations:
         # .......
         self.obc_current = 15000
         
-        
-  # .... Missing other error handling functions .... 
