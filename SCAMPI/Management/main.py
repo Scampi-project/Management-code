@@ -105,11 +105,11 @@ class Main:
     def bouton2(self):
         self.measure.record_videos(True)
     def bouton3(self):
-        self.systate.update_mode("Nominal")
+        self.systate.update_mode(self.systate.current_mode,"Nominal")
     def bouton4(self):
-        self.systate.update_mode("Transmission")
+        self.systate.update_mode(self.systate.current_mode,"Transmission")
     def bouton5(self):
-        self.systate.update_mode("Data_analysis")
+        self.systate.update_mode(self.systate.current_mode,"Data_analysis")
     def bouton6(self):
         self.measure.measure_external_temp()
     def bouton7(self):
