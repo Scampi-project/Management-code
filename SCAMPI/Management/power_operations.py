@@ -4,6 +4,8 @@ from gc import collect
 import os
 import json
 from datetime import datetime
+from nominal_operations import NominalOperations
+from measurement_operations import MeasurementManager
 
 class PowerManager:
     path = r'/home/pi1/SCAMPI/sensors_values.json'
@@ -60,6 +62,14 @@ class PowerManager:
                 self.system.update_mode('Nominal')
 
     def run_initialization_sequence(self):
+        self.measure = measure
+        self.logger.log_info(f"power_operations",f"mode is shifting from 'PowerOff' to 'PowerOn'")
+        self.check_power_status()
+        self.system.update_mode('PowerOn','Initialization')
+        self.logger.log_info(f"power_operations",f"mode is shifting from 'Power On' to Initialization")
+        self.measure.perform_sensors_measurements()
+        self.nominal_ops.perform_nominal_operations(self.measure.inside_temp)
+        self.time = time.time()
         self.time = datetime.now()
         # Perform initialization steps
         with open(path, 'r') as file :
